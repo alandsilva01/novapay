@@ -1,73 +1,73 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# NovaPay
 
-Currently, two official plugins are available:
+App bancario simulado desenvolvido como desafio tecnico.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Como rodar
 
-## React Compiler
+npm install
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+npm run dev
 
-## Expanding the ESLint configuration
+Acesse: http://localhost:5173
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Credenciais: user@novapay.com / novapay123
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- React + TypeScript + Vite
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Tailwind CSS + CVA
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- shadcn/ui + Radix
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- React Router
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- React Query
+
+- Zustand
+
+- React Hook Form + Zod
+
+- Axios
+
+- Vitest
+
+## Decisoes tecnicas
+
+Zustand foi escolhido pelo estado global simples e sem boilerplate. O authStore usa persist para manter a sessao apos reload. O transactionStore nao persiste pois em producao os dados viriam de uma API.
+
+React Hook Form + Zod separam responsabilidades: o Zod define o contrato de validacao em schema reutilizavel, o RHF gerencia o formulario com minimo de re-renders. Validacoes de negocio como saldo insuficiente ficam no onSubmit.
+
+PrivateRoute protege rotas autenticadas redirecionando para login caso o usuario nao esteja autenticado, evitando acesso direto pela URL.
+
+React Query configurado com staleTime de 5 minutos e retry 1, pronto para substituir os dados mock por chamadas reais de API.
+
+## Seguranca
+
+Em producao, o app seria protegido por:
+
+Engenharia reversa: minificacao e ofuscacao do bundle via Vite build, variaveis de ambiente via .env nunca expostas no cliente.
+
+Vazamento de dados: tokens JWT armazenados em httpOnly cookies e nao localStorage, HTTPS obrigatorio, headers de seguranca via helmet no backend, refresh token rotation, logout automatico por inatividade.
+
+## Melhorias futuras
+
+- Integrar API real substituindo os mocks
+
+- Adicionar autenticacao JWT completa
+
+- Paginacao no extrato
+
+- Filtros por data e tipo de transacao
+
+- Testes de integracao com Testing Library
+
+- PWA para uso mobile
+
+## Testes
+
+npm run test
+
+3 testes unitarios cobrindo o fluxo de autenticacao: login, logout e estado inicial.
+
