@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/store/authStore'
 import Login from '@/pages/Login'
 import Dashboard from '@/pages/Dashboard'
+import Transfer from '@/pages/Transfer'
 import PrivateRoute from '@/components/PrivateRoute'
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
       <Route path="/" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} />} />
       <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+      <Route path="/transfer" element={<PrivateRoute><Transfer /></PrivateRoute>} />
     </Routes>
   )
 }
