@@ -1,8 +1,9 @@
 ﻿import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
-import { useTransactionStore } from '@/store/transactionStore'
+import { toast } from 'sonner'
 import { transferSchema, TransferFormData } from '@/schemas/transferSchema'
+import { useTransfer } from '@/hooks/useTransfer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -10,24 +11,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function Transfer() {
   const navigate = useNavigate()
-  const { balance, transfer } = useTransactionStore()
+  const { execute, insufficientFunds, balance } = useTransfer()
 
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<TransferFormData>({
     resolver: zodResolver(transferSchema),
   })
 
   const onSubmit = (data: TransferFormData) => {
-    if (data.amount > balance) {
-      setError('amount', { message: 'Saldo insuficiente' })
-      return
-    }
-    transfer(data.amount, 'Transferencia para ' + data.recipient + ': ' + data.description)
-    navigate('/dashboard')
+    const ok = execute(data)
+    if (!ok) return
+    toast.success('Transferencia realizada com sucesso!')
+    setTimeout(() => navigate('/dashboard'), 1500)
   }
 
   return (
@@ -55,6 +53,7 @@ export default function Transfer() {
               <Label className="text-slate-300 text-xs uppercase tracking-wider">Valor (R$)</Label>
               <Input type="number" placeholder="0.00" className="bg-dark-700 border-neon-cyan/20 text-slate-100 font-mono focus:border-neon-cyan" {...register('amount')} />
               {errors.amount && <p className="text-xs text-red-400">{errors.amount.message}</p>}
+              {insufficientFunds && <p className="text-xs text-red-400">Saldo insuficiente</p>}
             </div>
             <div className="space-y-1">
               <Label className="text-slate-300 text-xs uppercase tracking-wider">Descricao</Label>
