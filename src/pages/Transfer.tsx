@@ -18,7 +18,7 @@ export default function Transfer() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<TransferFormData>({
-    resolver: zodResolver(transferSchema),
+    resolver: zodResolver(transferSchema) as any,
   })
 
   const onSubmit = (data: TransferFormData) => {
@@ -46,18 +46,18 @@ export default function Transfer() {
           <CardContent className="space-y-4">
             <div className="space-y-1">
               <Label className="text-slate-300 text-xs uppercase tracking-wider">Destinatario</Label>
-              <Input placeholder="Nome do destinatario" className="bg-dark-700 border-neon-cyan/20 text-slate-100 font-mono focus:border-neon-cyan" {...register('recipient')} />
+              <Input type="text" placeholder="Nome do destinatario" className="bg-dark-700 border-neon-cyan/20 text-slate-100 font-mono focus:border-neon-cyan" {...register('recipient')} />
               {errors.recipient && <p className="text-xs text-red-400">{errors.recipient.message}</p>}
             </div>
             <div className="space-y-1">
               <Label className="text-slate-300 text-xs uppercase tracking-wider">Valor (R$)</Label>
-              <Input type="number" placeholder="0.00" className="bg-dark-700 border-neon-cyan/20 text-slate-100 font-mono focus:border-neon-cyan" {...register('amount')} />
+              <Input type="number" step="0.01" placeholder="0.00" className="bg-dark-700 border-neon-cyan/20 text-slate-100 font-mono focus:border-neon-cyan" {...register('amount', { valueAsNumber: true })} />
               {errors.amount && <p className="text-xs text-red-400">{errors.amount.message}</p>}
               {insufficientFunds && <p className="text-xs text-red-400">Saldo insuficiente</p>}
             </div>
             <div className="space-y-1">
               <Label className="text-slate-300 text-xs uppercase tracking-wider">Descricao</Label>
-              <Input placeholder="Ex: Pagamento aluguel" className="bg-dark-700 border-neon-cyan/20 text-slate-100 font-mono focus:border-neon-cyan" {...register('description')} />
+              <Input type="text" placeholder="Ex: Pagamento aluguel" className="bg-dark-700 border-neon-cyan/20 text-slate-100 font-mono focus:border-neon-cyan" {...register('description')} />
               {errors.description && <p className="text-xs text-red-400">{errors.description.message}</p>}
             </div>
             <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting} className="w-full bg-neon-cyan text-dark-900 font-bold uppercase tracking-widest hover:bg-neon-cyan/80">
